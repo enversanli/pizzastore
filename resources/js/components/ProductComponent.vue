@@ -34,7 +34,8 @@
 
             <div class="w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col" v-for="product in products">
                 <a href="#">
-                    <img class="hover:grow hover:shadow-lg w-full h-75" style="height: 250px !important;" :src="product.image">
+                    <img class="hover:grow hover:shadow-lg w-full h-75" style="height: 250px !important;"
+                         :src="product.image">
                     <div class="pt-3 flex items-center justify-between">
                         <p class="">{{ product.name }}</p>
                         <svg class="h-6 w-6 fill-current text-gray-500 hover:text-black"
@@ -45,7 +46,10 @@
                     </div>
                     <p class="pt-1 text-gray-900">{{ product.price }} €</p>
                 </a>
-                <button class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" @click="addToOrder(product)">Add</button>
+                <button
+                    class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+                    @click="addToOrder(product)">Add
+                </button>
             </div>
         </div>
 
@@ -95,25 +99,37 @@
                                         <div class="text-left">{{ order.count }}</div>
                                     </td>
                                     <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left font-medium text-green-500">{{ formatPrice(order.price) }} €</div>
+                                        <div class="text-left font-medium text-green-500">{{ formatPrice(order.price) }}
+                                            €
+                                        </div>
                                     </td>
 
                                     <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left font-medium text-green-500" @click="removeOrder(index)">Remove</div>
+                                        <div class="text-left font-medium text-green-500" @click="removeOrder(index)">
+                                            Remove
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
+                            <div class="mt-5">
+                                <p class="w-full"><b>TOTAL :</b> {{ formatPrice(total) }} €</p> <br>
+                                <p class="w-full">Delivery Cost : {{ deliveryPrice }}</p>
+                                <p class="w-full" v-if="deliveryFree">Free Delivery</p>
+                                <div class="w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col mx-auto">
+                                    <button
+                                        class="w-full inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out w-full"
+                                        @click="addToOrder">Complete Order
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
             </nav>
-            <p class="w-full"><b>TOTAL :</b> {{ formatPrice(total) }} €</p> <br>
-            <p class="w-full">Delivery Cost : {{deliveryPrice}}</p>
-            <p class="w-full" v-if="deliveryFree">Free Delivery</p>
-            <div class="w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col mx-auto">
-                <button class="w-full inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out w-full" @click="addToOrder">Complete Order</button>
-            </div>
+
         </div>
     </section>
 </template>
@@ -159,7 +175,7 @@ export default {
 
         },
 
-        removeOrder(key){
+        removeOrder(key) {
             Vue.delete(this.orders, key);
         },
 
@@ -199,7 +215,7 @@ export default {
             this.total += product.price;
         },
         formatPrice(value) {
-            let val = (value/1).toFixed(2).replace('.', ',')
+            let val = (value / 1).toFixed(2).replace('.', ',')
             return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
         }
     }

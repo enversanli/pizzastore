@@ -5616,7 +5616,7 @@ var render = function render() {
           return _vm.addToOrder(product);
         }
       }
-    }, [_vm._v("Add")])]);
+    }, [_vm._v("Add\n            ")])]);
   })], 2), _vm._v(" "), _vm.orders.length ? _c("div", {
     staticClass: "container flex items-left flex-wrap pt-4 pb-12 w-1/2 float-left"
   }, [_c("nav", {
@@ -5661,7 +5661,7 @@ var render = function render() {
       staticClass: "p-2 whitespace-nowrap"
     }, [_c("div", {
       staticClass: "text-left font-medium text-green-500"
-    }, [_vm._v(_vm._s(_vm.formatPrice(order.price)) + " €")])]), _vm._v(" "), _c("td", {
+    }, [_vm._v(_vm._s(_vm.formatPrice(order.price)) + "\n                                        €\n                                    ")])]), _vm._v(" "), _c("td", {
       staticClass: "p-2 whitespace-nowrap"
     }, [_c("div", {
       staticClass: "text-left font-medium text-green-500",
@@ -5670,8 +5670,10 @@ var render = function render() {
           return _vm.removeOrder(index);
         }
       }
-    }, [_vm._v("Remove")])])]);
-  }), 0)])])])])]), _vm._v(" "), _c("p", {
+    }, [_vm._v("\n                                        Remove\n                                    ")])])]);
+  }), 0)]), _vm._v(" "), _c("div", {
+    staticClass: "mt-5"
+  }, [_c("p", {
     staticClass: "w-full"
   }, [_c("b", [_vm._v("TOTAL :")]), _vm._v(" " + _vm._s(_vm.formatPrice(_vm.total)) + " €")]), _vm._v(" "), _c("br"), _vm._v(" "), _c("p", {
     staticClass: "w-full"
@@ -5684,7 +5686,7 @@ var render = function render() {
     on: {
       click: _vm.addToOrder
     }
-  }, [_vm._v("Complete Order")])])]) : _vm._e()]);
+  }, [_vm._v("Complete Order\n                                ")])])])])])])])]) : _vm._e()]);
 };
 
 var staticRenderFns = [function () {
