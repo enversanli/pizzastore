@@ -4,7 +4,7 @@ namespace App\Support;
 
 class ResponseMessage
 {
-    public static function returnData($status = true, $message = null, $data = null)
+    public static function returnData($status = true, $data = null, $message = null)
     {
 
         if (!$message)

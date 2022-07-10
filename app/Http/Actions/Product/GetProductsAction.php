@@ -12,7 +12,7 @@ class GetProductsAction
 
             $products = Product::all();
 
-            return ResponseMessage::returnData(true, '', $products);
+            return ResponseMessage::returnData(true, $products);
 
         }catch (\Exception $exception){
             activity()

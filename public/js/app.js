@@ -5391,21 +5391,78 @@ __webpack_require__.r(__webpack_exports__);
   name: "ProductComponent",
   data: function data() {
     return {
-      products: null
+      products: null,
+      orders: [],
+      total: 0,
+      deliveryPrice: 15,
+      deliveryFree: false
     };
   },
   mounted: function mounted() {
     this.getProducts();
   },
   methods: {
-    getProducts: function getProducts() {
+    addToOrder: function addToOrder(product) {
       var _this = this;
 
+      var exist = false;
+      this.orders.forEach(function (data) {
+        if (data.id === product.id) {
+          data.count = data.count + 1;
+          data.price = data.count * product.price;
+          exist = true;
+
+          _this.calculateTotal(product);
+
+          return true;
+        }
+      });
+
+      if (exist) {
+        return true;
+      }
+
+      var newOrderProduct = this.getOrderData(product);
+      this.orders.push(newOrderProduct);
+      this.calculateTotal(product);
+    },
+    removeOrder: function removeOrder(key) {
+      Vue["delete"](this.orders, key);
+    },
+    getProducts: function getProducts() {
+      var _this2 = this;
+
       axios.get('/api/products').then(function (response) {
-        _this.products = response.data.data;
+        _this2.products = response.data.data;
       })["catch"](function (error) {
         alert("Something went wrong!");
       });
+    },
+    getOrderData: function getOrderData(product) {
+      return {
+        'id': product.id,
+        'name': product.name,
+        'image': product.image,
+        'count': 1,
+        'price': product.price
+      };
+    },
+    calculateTotal: function calculateTotal(product) {
+      var currentTotal = product.price + this.total;
+
+      if (currentTotal > 15) {
+        this.deliveryPrice = 0;
+        this.deliveryFree = true;
+      } else {
+        this.deliveryPrice = 15;
+        this.deliveryFree = false;
+      }
+
+      this.total += product.price;
+    },
+    formatPrice: function formatPrice(value) {
+      var val = (value / 1).toFixed(2).replace('.', ',');
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
   }
 });
@@ -5470,10 +5527,8 @@ var render = function render() {
   var _vm = this,
       _c = _vm._self._c;
 
-  return _c("section", {
-    staticClass: "bg-white py-8"
-  }, [_c("h1", [_vm._v("Sivas")]), _vm._v(" "), _c("div", {
-    staticClass: "container mx-auto flex items-center flex-wrap pt-4 pb-12"
+  return _c("section", {}, [_c("div", {
+    staticClass: "container flex items-left flex-wrap pt-4 pb-12 w-1/2 float-left"
   }, [_c("nav", {
     staticClass: "w-full z-30 top-0 px-6 py-1",
     attrs: {
@@ -5527,13 +5582,16 @@ var render = function render() {
     }
   })])])])])]), _vm._v(" "), _vm._l(_vm.products, function (product) {
     return _c("div", {
-      staticClass: "w-full md:w-1/3 xl:w-1/4 p-6 flex flex-col"
+      staticClass: "w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col"
     }, [_c("a", {
       attrs: {
         href: "#"
       }
     }, [_c("img", {
-      staticClass: "hover:grow hover:shadow-lg",
+      staticClass: "hover:grow hover:shadow-lg w-full h-75",
+      staticStyle: {
+        height: "250px !important"
+      },
       attrs: {
         src: product.image
       }
@@ -5551,11 +5609,108 @@ var render = function render() {
       }
     })])]), _vm._v(" "), _c("p", {
       staticClass: "pt-1 text-gray-900"
-    }, [_vm._v("£" + _vm._s(product.price))])])]);
-  })], 2)]);
+    }, [_vm._v(_vm._s(product.price) + " €")])]), _vm._v(" "), _c("button", {
+      staticClass: "inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out",
+      on: {
+        click: function click($event) {
+          return _vm.addToOrder(product);
+        }
+      }
+    }, [_vm._v("Add")])]);
+  })], 2), _vm._v(" "), _vm.orders.length ? _c("div", {
+    staticClass: "container flex items-left flex-wrap pt-4 pb-12 w-1/2 float-left"
+  }, [_c("nav", {
+    staticClass: "w-full z-30 top-0 px-6 py-1"
+  }, [_c("div", {
+    staticClass: "w-full container mx-auto items-center justify-between mt-0 px-2 py-3"
+  }, [_c("a", {
+    staticClass: "d-block uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl",
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("\n                    Orders\n                ")]), _vm._v(" "), _c("div", {
+    staticClass: "p-3 d-block w-full"
+  }, [_c("div", {
+    staticClass: "overflow-x-auto"
+  }, [_c("table", {
+    staticClass: "table-auto w-full"
+  }, [_vm._m(0), _vm._v(" "), _c("tbody", {
+    staticClass: "text-sm divide-y divide-gray-100"
+  }, _vm._l(_vm.orders, function (order, index) {
+    return _c("tr", [_c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "flex items-center"
+    }, [_c("div", {
+      staticClass: "w-10 h-10 flex-shrink-0 mr-2 sm:mr-3"
+    }, [_c("img", {
+      staticClass: "rounded-full",
+      attrs: {
+        src: order.image,
+        width: "40",
+        height: "40",
+        alt: "Alex Shatov"
+      }
+    })]), _vm._v(" "), _c("div", {
+      staticClass: "font-medium text-gray-800"
+    }, [_vm._v(_vm._s(order.name))])])]), _vm._v(" "), _c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "text-left"
+    }, [_vm._v(_vm._s(order.count))])]), _vm._v(" "), _c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "text-left font-medium text-green-500"
+    }, [_vm._v(_vm._s(_vm.formatPrice(order.price)) + " €")])]), _vm._v(" "), _c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "text-left font-medium text-green-500",
+      on: {
+        click: function click($event) {
+          return _vm.removeOrder(index);
+        }
+      }
+    }, [_vm._v("Remove")])])]);
+  }), 0)])])])])]), _vm._v(" "), _c("p", {
+    staticClass: "w-full"
+  }, [_c("b", [_vm._v("TOTAL :")]), _vm._v(" " + _vm._s(_vm.formatPrice(_vm.total)) + " €")]), _vm._v(" "), _c("br"), _vm._v(" "), _c("p", {
+    staticClass: "w-full"
+  }, [_vm._v("Delivery Cost : " + _vm._s(_vm.deliveryPrice))]), _vm._v(" "), _vm.deliveryFree ? _c("p", {
+    staticClass: "w-full"
+  }, [_vm._v("Free Delivery")]) : _vm._e(), _vm._v(" "), _c("div", {
+    staticClass: "w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col mx-auto"
+  }, [_c("button", {
+    staticClass: "w-full inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out w-full",
+    on: {
+      click: _vm.addToOrder
+    }
+  }, [_vm._v("Complete Order")])])]) : _vm._e()]);
 };
 
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+      _c = _vm._self._c;
+
+  return _c("thead", {
+    staticClass: "text-xs font-semibold uppercase text-gray-400 bg-gray-50"
+  }, [_c("tr", [_c("th", {
+    staticClass: "p-2 whitespace-nowrap"
+  }, [_c("div", {
+    staticClass: "font-semibold text-left"
+  }, [_vm._v("Name")])]), _vm._v(" "), _c("th", {
+    staticClass: "p-2 whitespace-nowrap"
+  }, [_c("div", {
+    staticClass: "font-semibold text-left"
+  }, [_vm._v("Piece")])]), _vm._v(" "), _c("th", {
+    staticClass: "p-2 whitespace-nowrap"
+  }, [_c("div", {
+    staticClass: "font-semibold text-left"
+  }, [_vm._v("Price")])]), _vm._v(" "), _c("th", {
+    staticClass: "p-2 whitespace-nowrap"
+  }, [_c("div", {
+    staticClass: "font-semibold text-left"
+  }, [_vm._v("Pr")])])])]);
+}];
 render._withStripped = true;
 
 

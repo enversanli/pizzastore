@@ -4,3 +4,9 @@
 
 - Clone Repo
 - composer install
+- php artisan migrate
+- php artisan db:seed
+- npm install
+- copy .env.example to .env
+
+<small>You need to create a database named as <b>pizzastore</b> </small>

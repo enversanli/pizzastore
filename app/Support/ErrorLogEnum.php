@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-class ErrorLogEnum
+enum ErrorLogEnum:string
 {
-
+    case GET_PRODUCTS_ERROR = 'GET_PRODUCTS_ERROR';
 }
