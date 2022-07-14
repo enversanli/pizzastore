@@ -8,7 +8,7 @@ class ResponseMessage
     {
 
         if (!$message)
-            $message = 'Success';
+            $message = $status ? 'Success' : 'Something went wrong.';
 
         return (object)[
             'message' => $message,

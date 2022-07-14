@@ -119,7 +119,7 @@
                                 <div class="w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col mx-auto">
                                     <button
                                         class="w-full inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out w-full"
-                                        @click="addToOrder">Complete Order
+                                        @click="createOrder">Complete Order
                                     </button>
                                 </div>
                             </div>
@@ -152,6 +152,14 @@ export default {
     },
 
     methods: {
+        createOrder() {
+            axios.post('/api/order', this.orders).then(response => {
+                alert(response.data.message);
+            }).catch(error => {
+                alert(error.data.data.message);
+            });
+        },
+
         addToOrder(product) {
             var exist = false;
             this.orders.forEach(data => {

@@ -3,10 +3,11 @@
 <p>You can install the project to following lines :</p>
 
 - Clone Repo
+- copy .env.example to .env
 - composer install
+- npm install
 - php artisan migrate
 - php artisan db:seed
-- npm install
-- copy .env.example to .env
+
 
 <small>You need to create a database named as <b>pizzastore</b> </small>
