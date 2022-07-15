@@ -2,7 +2,7 @@
 
 <div id="app">
     @php $orderNumber = (int)request()->orderNumber @endphp
-    <single-order-component orderNumber="{{$orderNumber}}"></single-order-component>
+    <single-order-component order-number="{{$orderNumber}}"></single-order-component>
 
 </div>
 @include('layouts.footer')

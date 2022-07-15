@@ -127,12 +127,9 @@
                                 </div>
                                 <div class="w-full  md:w-1/2 xl:w-1/2 p-6 flex flex-col mx-auto">
                                     <button
-                                        :disabled="!customer.full_name || !customer.phone || !customer.address"
                                         class="w-full inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out w-full"
                                         @click="createOrder">Complete Order
                                     </button>
-
-                                    <a :href="orderUrl" v-if="orderUrl">Display Order</a>
                                 </div>
                             </div>
                         </div>
@@ -142,6 +139,10 @@
 
             </nav>
 
+        </div>
+
+        <div class="border-2 mt-4 w-full py-4" v-if="orderUrl">
+            <a :href="orderUrl" class="p-2 bg-black text-white rounded">-> Go To The Last Order</a>
         </div>
     </section>
 </template>
@@ -157,7 +158,7 @@ export default {
             total: 0,
             deliveryFee: 15,
             deliveryFree: false,
-            orderUrl : null
+            orderUrl: null
         }
     },
 
@@ -168,19 +169,43 @@ export default {
 
     methods: {
         createOrder() {
+            if (!this.checkForm()){
+                return false;
+            }
+
             this.orderUrl = null;
             const data = {
-                'orders' : this.orders,
-                'customer' : this.customer
+                'orders': this.orders,
+                'customer': this.customer
             };
 
             axios.post('/api/order', data).then(response => {
                 alert(response.data.message);
                 this.orderUrl = response.data.data.url;
+
+                this.orders = [];
             }).catch(error => {
                 alert(error.response.data.message);
             });
         },
+
+        checkForm() {
+            if (!this.customer.full_name) {
+                alert('Full Name is required');
+                return false;
+            }
+            if (!this.customer.phone) {
+                alert('Phone is required');
+                return false;
+            }
+            if (!this.customer.address) {
+                alert('Adress is required');
+                return false;
+            }
+
+            return  true;
+        },
+
         me() {
             axios.get('/api/me').then(response => {
                 this.customer = response.data.data;

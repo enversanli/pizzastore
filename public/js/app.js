@@ -5521,6 +5521,10 @@ __webpack_require__.r(__webpack_exports__);
     createOrder: function createOrder() {
       var _this = this;
 
+      if (!this.checkForm()) {
+        return false;
+      }
+
       this.orderUrl = null;
       var data = {
         'orders': this.orders,
@@ -5529,9 +5533,28 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/api/order', data).then(function (response) {
         alert(response.data.message);
         _this.orderUrl = response.data.data.url;
+        _this.orders = [];
       })["catch"](function (error) {
         alert(error.response.data.message);
       });
+    },
+    checkForm: function checkForm() {
+      if (!this.customer.full_name) {
+        alert('Full Name is required');
+        return false;
+      }
+
+      if (!this.customer.phone) {
+        alert('Phone is required');
+        return false;
+      }
+
+      if (!this.customer.address) {
+        alert('Adress is required');
+        return false;
+      }
+
+      return true;
     },
     me: function me() {
       var _this2 = this;
@@ -5623,7 +5646,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "ProductComponent",
-  props: ['orderNumber'],
+  props: ['order-number'],
   data: function data() {
     return {
       products: null,
@@ -5643,7 +5666,7 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/api/orders/' + this.orderNumber).then(function (response) {
-        _this.orders = response.data.data;
+        _this.order = response.data.data;
         console.log(_this.orders);
       })["catch"](function (error) {
         alert(error.response.data.message);
@@ -5657,6 +5680,10 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (error) {
         alert(error.data.data.message);
       });
+    },
+    formatPrice: function formatPrice(value) {
+      var val = (value / 1).toFixed(2).replace('.', ',');
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
   }
 });
@@ -5822,25 +5849,25 @@ var render = function render() {
       }, [_vm._v(_vm._s(order.piece))])]), _vm._v(" "), _c("td", {
         staticClass: "p-2 whitespace-nowrap"
       }, [_c("div", {
-        staticClass: "text-left font-medium text-green-500"
-      }, [_vm._v("\n                                        " + _vm._s(_vm.formatPrice(order.product.price)) + "\n                                        €\n                                    ")])]), _vm._v(" "), _c("td", {
+        staticClass: "text-left font-medium text-red-500"
+      }, [_vm._v("\n                                        " + _vm._s(order.address ? order.address.address : "-") + "\n                                    ")])]), _vm._v(" "), _c("td", {
         staticClass: "p-2 whitespace-nowrap"
       }, [_c("div", {
-        staticClass: "text-left font-medium text-red-500"
-      }, [_vm._v("\n                                        " + _vm._s(order.address ? order.address.address : "-") + "\n                                    ")])])]);
+        staticClass: "text-left font-medium text-green-500"
+      }, [_vm._v("\n                                        " + _vm._s(_vm.formatPrice(order.product.price)) + "\n                                        €\n                                    ")])])]);
     }), _vm._v(" "), _c("tr", {
       staticClass: "text-primary border-bottom-2"
     }, [_c("td", {
-      staticClass: "text-left",
+      staticClass: "text-right",
       attrs: {
-        colspan: "4"
+        colspan: "5"
       }
     }, [_vm._v("Delivery Fee : " + _vm._s(row.delivery_fee))])]), _vm._v(" "), _c("tr", {
       staticClass: "text-primary border-bottom-2"
     }, [_c("td", {
-      staticClass: "text-left",
+      staticClass: "text-right",
       attrs: {
-        colspan: "4"
+        colspan: "5"
       }
     }, [_vm._v("Total : " + _vm._s(row.total))])])], 2);
   })], 2)])])])])]) : _vm._e()]);
@@ -5868,11 +5895,11 @@ var staticRenderFns = [function () {
     staticClass: "p-2 whitespace-nowrap"
   }, [_c("div", {
     staticClass: "font-semibold text-left"
-  }, [_vm._v("Price")])]), _vm._v(" "), _c("th", {
+  }, [_vm._v("Adres")])]), _vm._v(" "), _c("th", {
     staticClass: "p-2 whitespace-nowrap"
   }, [_c("div", {
     staticClass: "font-semibold text-left"
-  }, [_vm._v("Adres")])])])]);
+  }, [_vm._v("Price")])])])]);
 }];
 render._withStripped = true;
 
@@ -6113,17 +6140,17 @@ var render = function render() {
     staticClass: "w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col mx-auto"
   }, [_c("button", {
     staticClass: "w-full inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out w-full",
-    attrs: {
-      disabled: !_vm.customer.full_name || !_vm.customer.phone || !_vm.customer.address
-    },
     on: {
       click: _vm.createOrder
     }
-  }, [_vm._v("Complete Order\n                                ")]), _vm._v(" "), _vm.orderUrl ? _c("a", {
+  }, [_vm._v("Complete Order\n                                ")])])])])])])])]) : _vm._e(), _vm._v(" "), _vm.orderUrl ? _c("div", {
+    staticClass: "border-2 mt-4 w-full py-4"
+  }, [_c("a", {
+    staticClass: "p-2 bg-black text-white rounded",
     attrs: {
       href: _vm.orderUrl
     }
-  }, [_vm._v("Display Order")]) : _vm._e()])])])])])])]) : _vm._e()]);
+  }, [_vm._v("-> Go To The Last Order")])]) : _vm._e()]);
 };
 
 var staticRenderFns = [function () {
@@ -6243,53 +6270,55 @@ var render = function render() {
     staticClass: "table-auto w-full"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", {
     staticClass: "text-sm divide-y divide-gray-100"
-  }, [_c("tr", [_c("td", {
-    staticClass: "p-2 whitespace-nowrap"
-  }, [_c("div", {
-    staticClass: "flex items-center"
-  }, [_c("div", {
-    staticClass: "w-10 h-10 flex-shrink-0 mr-2 sm:mr-3"
-  }, [_c("img", {
-    staticClass: "rounded-full",
-    attrs: {
-      src: _vm.order.product.image,
-      width: "40",
-      height: "40",
-      alt: "Alex Shatov"
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "font-medium text-gray-800"
-  }, [_vm._v(_vm._s(_vm.order.product.name))])])]), _vm._v(" "), _c("td", {
-    staticClass: "p-2 whitespace-nowrap"
-  }, [_c("div", {
-    staticClass: "text-left"
-  }, [_vm._v(_vm._s(_vm.order.no))])]), _vm._v(" "), _c("td", {
-    staticClass: "p-2 whitespace-nowrap"
-  }, [_c("div", {
-    staticClass: "text-left"
-  }, [_vm._v(_vm._s(_vm.order.piece))])]), _vm._v(" "), _c("td", {
-    staticClass: "p-2 whitespace-nowrap"
-  }, [_c("div", {
-    staticClass: "text-left font-medium text-green-500"
-  }, [_vm._v("\n                                        " + _vm._s(_vm.formatPrice(_vm.order.product.price)) + "\n                                        €\n                                    ")])]), _vm._v(" "), _c("td", {
-    staticClass: "p-2 whitespace-nowrap"
-  }, [_c("div", {
-    staticClass: "text-left font-medium text-red-500"
-  }, [_vm._v("\n                                        " + _vm._s(_vm.order.address ? _vm.order.address.address : "-") + "\n                                    ")])])]), _vm._v(" "), _c("tr", {
+  }, [_vm._l(_vm.order.orders, function (row) {
+    return _c("tr", [_c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "flex items-center"
+    }, [_c("div", {
+      staticClass: "w-10 h-10 flex-shrink-0 mr-2 sm:mr-3"
+    }, [_c("img", {
+      staticClass: "rounded-full",
+      attrs: {
+        src: row.product.image,
+        width: "40",
+        height: "40",
+        alt: "Alex Shatov"
+      }
+    })]), _vm._v(" "), _c("div", {
+      staticClass: "font-medium text-gray-800"
+    }, [_vm._v(_vm._s(row.product.name))])])]), _vm._v(" "), _c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "text-left"
+    }, [_vm._v(_vm._s(row.no))])]), _vm._v(" "), _c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "text-left"
+    }, [_vm._v(_vm._s(row.piece))])]), _vm._v(" "), _c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "text-left font-medium text-red-500"
+    }, [_vm._v("\n                                        " + _vm._s(row.address ? row.address.address : "-") + "\n                                    ")])]), _vm._v(" "), _c("td", {
+      staticClass: "p-2 whitespace-nowrap"
+    }, [_c("div", {
+      staticClass: "text-right font-medium text-green-500"
+    }, [_vm._v("\n                                        " + _vm._s(_vm.formatPrice(row.product.price)) + "\n                                        €\n                                    ")])])]);
+  }), _vm._v(" "), _c("tr", {
     staticClass: "text-primary border-bottom-2"
   }, [_c("td", {
-    staticClass: "text-left",
+    staticClass: "text-right",
     attrs: {
-      colspan: "4"
+      colspan: "5"
     }
-  }, [_vm._v("Delivery Fee : " + _vm._s(_vm.row.delivery_fee))])]), _vm._v(" "), _c("tr", {
+  }, [_vm._v("Delivery Fee : " + _vm._s(_vm.order.delivery_fee))])]), _vm._v(" "), _c("tr", {
     staticClass: "text-primary border-bottom-2"
   }, [_c("td", {
-    staticClass: "text-left",
+    staticClass: "text-right",
     attrs: {
-      colspan: "4"
+      colspan: "5"
     }
-  }, [_vm._v("Total : " + _vm._s(_vm.row.total))])])])])])])])])]) : _vm._e()]);
+  }, [_vm._v("Total : " + _vm._s(_vm.order.total))])])], 2)])])])])])]) : _vm._e()]);
 };
 
 var staticRenderFns = [function () {
@@ -6314,11 +6343,11 @@ var staticRenderFns = [function () {
     staticClass: "p-2 whitespace-nowrap"
   }, [_c("div", {
     staticClass: "font-semibold text-left"
-  }, [_vm._v("Price")])]), _vm._v(" "), _c("th", {
+  }, [_vm._v("Adres")])]), _vm._v(" "), _c("th", {
     staticClass: "p-2 whitespace-nowrap"
   }, [_c("div", {
     staticClass: "font-semibold text-left"
-  }, [_vm._v("Adres")])])])]);
+  }, [_vm._v("Price")])])])]);
 }];
 render._withStripped = true;
 

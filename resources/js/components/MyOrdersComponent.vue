@@ -55,10 +55,10 @@
                                         <div class="font-semibold text-left">Piece</div>
                                     </th>
                                     <th class="p-2 whitespace-nowrap">
-                                        <div class="font-semibold text-left">Price</div>
+                                        <div class="font-semibold text-left">Adres</div>
                                     </th>
                                     <th class="p-2 whitespace-nowrap">
-                                        <div class="font-semibold text-left">Adres</div>
+                                        <div class="font-semibold text-left">Price</div>
                                     </th>
                                 </tr>
                                 </thead>
@@ -82,22 +82,22 @@
                                         <div class="text-left">{{ order.piece }}</div>
                                     </td>
                                     <td class="p-2 whitespace-nowrap">
+                                        <div class="text-left font-medium text-red-500">
+                                            {{ order.address ? order.address.address : '-' }}
+                                        </div>
+                                    </td>
+                                    <td class="p-2 whitespace-nowrap">
                                         <div class="text-left font-medium text-green-500">
                                             {{ formatPrice(order.product.price) }}
                                             €
                                         </div>
                                     </td>
-                                    <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left font-medium text-red-500">
-                                            {{ order.address ? order.address.address : '-' }}
-                                        </div>
-                                    </td>
                                 </tr>
                                 <tr class="text-primary border-bottom-2">
-                                    <td colspan="4" class="text-left ">Delivery Fee : {{ row.delivery_fee }}</td>
+                                    <td colspan="5" class="text-right ">Delivery Fee : {{ row.delivery_fee }}</td>
                                 </tr>
                                 <tr class="text-primary border-bottom-2">
-                                    <td colspan="4" class="text-left ">Total : {{ row.total }}</td>
+                                    <td colspan="5" class="text-right ">Total : {{ row.total }}</td>
                                 </tr>
                                 </tbody>
                             </table>

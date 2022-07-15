@@ -84,7 +84,7 @@ class OrderController extends Controller
         if (!$order->data)
             return ResponseMessage::failed($order->message);
 
-        return ResponseMessage::success('Success', OrderSummaryResource::collection($order->data));
+        return ResponseMessage::success('Success', OrderSummaryResource::make($order->data));
     }
 
     public function store(StoreOrderRequest $request)

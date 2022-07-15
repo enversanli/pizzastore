@@ -55,49 +55,50 @@
                                         <div class="font-semibold text-left">Piece</div>
                                     </th>
                                     <th class="p-2 whitespace-nowrap">
-                                        <div class="font-semibold text-left">Price</div>
-                                    </th>
-                                    <th class="p-2 whitespace-nowrap">
                                         <div class="font-semibold text-left">Adres</div>
                                     </th>
+                                    <th class="p-2 whitespace-nowrap">
+                                        <div class="font-semibold text-left">Price</div>
+                                    </th>
+
                                 </tr>
                                 </thead>
                                 <tbody class="text-sm divide-y divide-gray-100">
-                                <tr>
+                                <tr v-for="row in order.orders">
                                     <td class="p-2 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3"><img class="rounded-full"
-                                                                                                   :src="order.product.image"
+                                                                                                   :src="row.product.image"
                                                                                                    width="40"
                                                                                                    height="40"
                                                                                                    alt="Alex Shatov">
                                             </div>
-                                            <div class="font-medium text-gray-800">{{ order.product.name }}</div>
+                                            <div class="font-medium text-gray-800">{{ row.product.name }}</div>
                                         </div>
                                     </td>
                                     <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left">{{ order.no }}</div>
+                                        <div class="text-left">{{ row.no }}</div>
                                     </td>
                                     <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left">{{ order.piece }}</div>
-                                    </td>
-                                    <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left font-medium text-green-500">
-                                            {{ formatPrice(order.product.price) }}
-                                            €
-                                        </div>
+                                        <div class="text-left">{{ row.piece }}</div>
                                     </td>
                                     <td class="p-2 whitespace-nowrap">
                                         <div class="text-left font-medium text-red-500">
-                                            {{ order.address ? order.address.address : '-' }}
+                                            {{ row.address ? row.address.address : '-' }}
+                                        </div>
+                                    </td>
+                                    <td class="p-2 whitespace-nowrap">
+                                        <div class="text-right font-medium text-green-500">
+                                            {{ formatPrice(row.product.price) }}
+                                            €
                                         </div>
                                     </td>
                                 </tr>
                                 <tr class="text-primary border-bottom-2">
-                                    <td colspan="4" class="text-left ">Delivery Fee : {{ row.delivery_fee }}</td>
+                                    <td colspan="5" class="text-right ">Delivery Fee : {{ order.delivery_fee }}</td>
                                 </tr>
                                 <tr class="text-primary border-bottom-2">
-                                    <td colspan="4" class="text-left ">Total : {{ row.total }}</td>
+                                    <td colspan="5" class="text-right ">Total : {{ order.total }}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -115,7 +116,7 @@
 <script>
 export default {
     name: "ProductComponent",
-    props: ['orderNumber'],
+    props: ['order-number'],
     data() {
         return {
             products: null,
@@ -135,7 +136,7 @@ export default {
     methods: {
         getOrder() {
             axios.get('/api/orders/' + this.orderNumber).then(response => {
-                this.orders = response.data.data;
+                this.order = response.data.data;
                 console.log(this.orders);
             }).catch(error => {
                 alert(error.response.data.message);
@@ -149,6 +150,11 @@ export default {
                 alert(error.data.data.message);
             });
         },
+
+        formatPrice(value) {
+            let val = (value / 1).toFixed(2).replace('.', ',')
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        }
     }
 }
 </script>
