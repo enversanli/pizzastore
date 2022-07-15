@@ -1,18 +1,15 @@
 <template>
 
     <section class="">
-        <div class="container flex items-left flex-wrap pt-4 pb-12 w-1/2 float-left">
-
+        <div class="container flex items-left flex-wrap pt-4 pb-12 w-full float-left">
             <nav id="store" class=" w-full z-30 top-0 px-6 py-1">
                 <div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 px-2 py-3">
 
                     <a class="uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl "
                        href="#">
-                        Products
+                        My Orders
                     </a>
-
                     <div class="flex items-center" id="store-nav-content">
-
                         <a class="pl-3 inline-block no-underline hover:text-black" href="#">
                             <svg class="fill-current hover:text-black" xmlns="http://www.w3.org/2000/svg" width="24"
                                  height="24" viewBox="0 0 24 24">
@@ -31,29 +28,9 @@
                     </div>
                 </div>
             </nav>
-
-            <div class="w-full md:w-1/2 xl:w-1/2 p-6 flex flex-col" v-for="product in products">
-                <a href="#">
-                    <img class="hover:grow hover:shadow-lg w-full h-75" style="height: 250px !important;"
-                         :src="product.image">
-                    <div class="pt-3 flex items-center justify-between">
-                        <p class="">{{ product.name }}</p>
-                        <svg class="h-6 w-6 fill-current text-gray-500 hover:text-black"
-                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                            <path
-                                d="M12,4.595c-1.104-1.006-2.512-1.558-3.996-1.558c-1.578,0-3.072,0.623-4.213,1.758c-2.353,2.363-2.352,6.059,0.002,8.412 l7.332,7.332c0.17,0.299,0.498,0.492,0.875,0.492c0.322,0,0.609-0.163,0.792-0.409l7.415-7.415 c2.354-2.354,2.354-6.049-0.002-8.416c-1.137-1.131-2.631-1.754-4.209-1.754C14.513,3.037,13.104,3.589,12,4.595z M18.791,6.205 c1.563,1.571,1.564,4.025,0.002,5.588L12,18.586l-6.793-6.793C3.645,10.23,3.646,7.776,5.205,6.209 c0.76-0.756,1.754-1.172,2.799-1.172s2.035,0.416,2.789,1.17l0.5,0.5c0.391,0.391,1.023,0.391,1.414,0l0.5-0.5 C14.719,4.698,17.281,4.702,18.791,6.205z"/>
-                        </svg>
-                    </div>
-                    <p class="pt-1 text-gray-900">{{ product.price }} €</p>
-                </a>
-                <button
-                    class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                    @click="addToOrder(product)">Add
-                </button>
-            </div>
         </div>
 
-        <div class="container flex items-left flex-wrap pt-4 pb-12 w-1/2 float-left" v-if="orders.length">
+        <div class="container flex items-left flex-wrap pt-4 pb-12 w-full float-left" v-if="orders.length">
 
             <nav class="w-full z-30 top-0 px-6 py-1">
 
@@ -61,7 +38,7 @@
 
                     <a class=" d-block uppercase tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl"
                        href="#">
-                        Orders
+                        Hello <b>{{ customer.full_name }}</b>
                     </a>
                     <div class="p-3 d-block w-full">
                         <div class="overflow-x-auto">
@@ -72,69 +49,58 @@
                                         <div class="font-semibold text-left">Name</div>
                                     </th>
                                     <th class="p-2 whitespace-nowrap">
+                                        <div class="font-semibold text-left">Order No</div>
+                                    </th>
+                                    <th class="p-2 whitespace-nowrap">
                                         <div class="font-semibold text-left">Piece</div>
                                     </th>
                                     <th class="p-2 whitespace-nowrap">
                                         <div class="font-semibold text-left">Price</div>
                                     </th>
                                     <th class="p-2 whitespace-nowrap">
-                                        <div class="font-semibold text-left">Pr</div>
+                                        <div class="font-semibold text-left">Adres</div>
                                     </th>
                                 </tr>
                                 </thead>
-                                <tbody class="text-sm divide-y divide-gray-100">
-                                <tr v-for="(order, index) in orders">
+                                <tbody class="text-sm divide-y divide-gray-100" v-for="row in orders">
+                                <tr v-for="order in row.orders">
                                     <td class="p-2 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="w-10 h-10 flex-shrink-0 mr-2 sm:mr-3"><img class="rounded-full"
-                                                                                                   :src="order.image"
+                                                                                                   :src="order.product.image"
                                                                                                    width="40"
                                                                                                    height="40"
                                                                                                    alt="Alex Shatov">
                                             </div>
-                                            <div class="font-medium text-gray-800">{{ order.name }}</div>
+                                            <div class="font-medium text-gray-800">{{ order.product.name }}</div>
                                         </div>
                                     </td>
                                     <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left">{{ order.count }}</div>
+                                        <div class="text-left">{{ order.no }}</div>
                                     </td>
                                     <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left font-medium text-green-500">{{ formatPrice(order.price) }}
+                                        <div class="text-left">{{ order.piece }}</div>
+                                    </td>
+                                    <td class="p-2 whitespace-nowrap">
+                                        <div class="text-left font-medium text-green-500">
+                                            {{ formatPrice(order.product.price) }}
                                             €
                                         </div>
                                     </td>
-
                                     <td class="p-2 whitespace-nowrap">
-                                        <div class="text-left font-medium text-green-500" @click="removeOrder(index)">
-                                            Remove
+                                        <div class="text-left font-medium text-red-500">
+                                            {{ order.address ? order.address.address : '-' }}
                                         </div>
                                     </td>
                                 </tr>
+                                <tr class="text-primary border-bottom-2">
+                                    <td colspan="4" class="text-left ">Delivery Fee : {{ row.delivery_fee }}</td>
+                                </tr>
+                                <tr class="text-primary border-bottom-2">
+                                    <td colspan="4" class="text-left ">Total : {{ row.total }}</td>
+                                </tr>
                                 </tbody>
                             </table>
-                            <div class="mt-5">
-                                <p class="w-full"><b>TOTAL :</b> {{ formatPrice(total) }} €</p> <br>
-                                <p class="w-full">Delivery Cost : {{ deliveryFee }}</p>
-                                <p class="w-full" v-if="deliveryFree">Free Delivery</p>
-
-                                <div class="mt-5">
-                                    <h4>Full Name :</h4>
-                                    <input class="w-full border-2 rounded-sm" type="text" v-model="customer.full_name">
-                                    <h4>Phone :</h4>
-                                    <input class="w-full border-2 rounded-sm" type="text" v-model="customer.phone">
-                                    <h4>Delivery Address :</h4>
-                                    <textarea class="w-full border-2 rounded-sm" v-model="customer.address"></textarea>
-                                </div>
-                                <div class="w-full  md:w-1/2 xl:w-1/2 p-6 flex flex-col mx-auto">
-                                    <button
-                                        :disabled="!customer.full_name || !customer.phone || !customer.address"
-                                        class="w-full inline-block px-6 py-2.5 bg-green-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-green-600 hover:shadow-lg focus:bg-green-600 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-700 active:shadow-lg transition duration-150 ease-in-out w-full"
-                                        @click="createOrder">Complete Order
-                                    </button>
-
-                                    <a :href="orderUrl" v-if="orderUrl">Display Order</a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -155,40 +121,33 @@ export default {
             orders: [],
             customer: {},
             total: 0,
-            deliveryFee: 15,
+            deliveryPrice: 15,
             deliveryFree: false,
-            orderUrl : null
         }
     },
 
     mounted() {
-        this.getProducts();
+        this.getOrders();
         this.me()
     },
 
     methods: {
-        createOrder() {
-            this.orderUrl = null;
-            const data = {
-                'orders' : this.orders,
-                'customer' : this.customer
-            };
-
-            axios.post('/api/order', data).then(response => {
-                alert(response.data.message);
-                this.orderUrl = response.data.data.url;
+        getOrders() {
+            axios.get('/api/orders').then(response => {
+                this.orders = response.data.data;
             }).catch(error => {
                 alert(error.response.data.message);
             });
         },
+
         me() {
             axios.get('/api/me').then(response => {
                 this.customer = response.data.data;
-                console.log(this.orders);
             }).catch(error => {
                 alert(error.response.data.message);
             });
         },
+
         addToOrder(product) {
             var exist = false;
             this.orders.forEach(data => {
@@ -241,10 +200,10 @@ export default {
             var currentTotal = product.price + this.total;
 
             if (currentTotal > 15) {
-                this.deliveryFee = 0;
+                this.deliveryPrice = 0;
                 this.deliveryFree = true;
             } else {
-                this.deliveryFee = 15;
+                this.deliveryPrice = 15;
                 this.deliveryFree = false;
             }
 
